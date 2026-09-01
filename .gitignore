@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+*.tsbuildinfo
+.DS_Store
+
+# local env
+.env
+.env.local
+.env.*.local
+
+# tooling output
+.vercel
+playwright-report
+test-results

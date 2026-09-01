@@ -1,0 +1,89 @@
+{
+  "fixtureNowIso": "2026-01-15T18:00:00.000Z",
+  "stopA": "80122",
+  "stopB": "5307",
+  "cases": [
+    {
+      "entityId": "e-late",
+      "tripId": "t-late",
+      "routeId": "720",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": 300,
+      "delaySeconds": 240,
+      "expectedStatus": "late",
+      "visibleForStopA": true
+    },
+    {
+      "entityId": "e-ontime",
+      "tripId": "t-ontime",
+      "routeId": "720",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": 420,
+      "delaySeconds": 15,
+      "expectedStatus": "ontime",
+      "visibleForStopA": true
+    },
+    {
+      "entityId": "e-early",
+      "tripId": "t-early",
+      "routeId": "2",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": 600,
+      "delaySeconds": -120,
+      "expectedStatus": "early",
+      "visibleForStopA": true
+    },
+    {
+      "entityId": "e-unknown",
+      "tripId": "t-unknown",
+      "routeId": "4",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": 720,
+      "delaySeconds": null,
+      "expectedStatus": "unknown",
+      "visibleForStopA": true
+    },
+    {
+      "entityId": "e-notime",
+      "tripId": "t-notime",
+      "routeId": "16",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": 0,
+      "delaySeconds": 300,
+      "omitTime": true,
+      "expectedStatus": "late",
+      "visibleForStopA": true
+    },
+    {
+      "entityId": "e-skipped",
+      "tripId": "t-skipped",
+      "routeId": "720",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": 900,
+      "delaySeconds": 0,
+      "skipped": true,
+      "expectedStatus": "ontime",
+      "visibleForStopA": false
+    },
+    {
+      "entityId": "e-past",
+      "tripId": "t-past",
+      "routeId": "720",
+      "stopId": "80122",
+      "arrivalOffsetSeconds": -600,
+      "delaySeconds": 60,
+      "expectedStatus": "late",
+      "visibleForStopA": false
+    },
+    {
+      "entityId": "e-otherstop",
+      "tripId": "t-otherstop",
+      "routeId": "10",
+      "stopId": "5307",
+      "arrivalOffsetSeconds": 200,
+      "delaySeconds": 30,
+      "expectedStatus": "ontime",
+      "visibleForStopA": false
+    }
+  ]
+}
