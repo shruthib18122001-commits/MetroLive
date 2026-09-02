@@ -48,3 +48,33 @@ export interface ArrivalsErrorBody {
     message: string;
   };
 }
+
+/** Which backend produced an arrivals response (also sent as the `X-Data-Source` header). */
+export type ArrivalsDataSource = 'live' | 'demo';
+
+/* -------------------------------------------------------------------------- *
+ * GET /api/stops — stop reference data for the search box and stop header.
+ * Backed by a bundled snapshot of LA Metro's GTFS *static* stops.txt.
+ * -------------------------------------------------------------------------- */
+
+export interface StopSummary {
+  /** GTFS `stop_id` — the value `/api/arrivals?stopId=` expects. */
+  id: string;
+  /** GTFS `stop_name`. */
+  name: string;
+  lat: number;
+  lon: number;
+}
+
+/** Success body of `GET /api/stops` — for both `?q=` (search) and `?id=` (lookup). */
+export type StopsResponse = StopSummary[];
+
+export type StopsErrorCode = 'MISSING_QUERY' | 'METHOD_NOT_ALLOWED' | 'INTERNAL';
+
+/** Non-2xx body of `GET /api/stops`. */
+export interface StopsErrorBody {
+  error: {
+    code: StopsErrorCode;
+    message: string;
+  };
+}

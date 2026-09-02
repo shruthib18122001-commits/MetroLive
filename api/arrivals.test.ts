@@ -105,8 +105,21 @@ describe('GET /api/arrivals', () => {
     expect((out.body as ArrivalsErrorBody).error.code).toBe('MISSING_STOP_ID');
   });
 
-  it('returns 500 NOT_CONFIGURED when the API key is absent', async () => {
+  it('serves demo arrivals (X-Data-Source: demo) when no API key is configured', async () => {
     vi.stubEnv('SWIFTLY_API_KEY', '');
+    vi.stubEnv('ARRIVALS_DEMO', '');
+    const { req, res, out } = fakeReqRes({ query: { stopId: FIXTURE_STOP_A } });
+    await handler(req, res);
+    expect(out.statusCode).toBe(200);
+    expect(out.headers.get('x-data-source')).toBe('demo');
+    const body = out.body as ArrivalsResponse;
+    expect(body.length).toBeGreaterThan(0);
+    expect(body.every((a) => a.predictedTime !== null)).toBe(true);
+  });
+
+  it('returns 500 NOT_CONFIGURED when no key and ARRIVALS_DEMO=0', async () => {
+    vi.stubEnv('SWIFTLY_API_KEY', '');
+    vi.stubEnv('ARRIVALS_DEMO', '0');
     const { req, res, out } = fakeReqRes({ query: { stopId: FIXTURE_STOP_A } });
     await handler(req, res);
     expect(out.statusCode).toBe(500);
@@ -126,6 +139,7 @@ describe('GET /api/arrivals', () => {
     expect(body.length).toBeGreaterThan(0);
     expect(body.every((a) => typeof a.routeId === 'string' && typeof a.status === 'string')).toBe(true);
     expect(out.headers.get('cache-control')).toContain('s-maxage=20');
+    expect(out.headers.get('x-data-source')).toBe('live');
     expect(out.headers.get('x-feed-timestamp')).toBe(new Date(FIXTURE_NOW_MS).toISOString());
 
     const fetchMock = vi.mocked(fetch);

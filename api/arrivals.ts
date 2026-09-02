@@ -1,15 +1,20 @@
 /**
  * Backend-for-frontend: GET /api/arrivals?stopId=<id>
  *
- * Fetches LA Metro's GTFS-realtime TripUpdates feed (served via Swiftly),
- * hands the raw bytes to the pure functions in `src/lib/transit.ts`, and
- * responds with a typed `Arrival[]` (or a typed error).
+ * With SWIFTLY_API_KEY set: fetches LA Metro's GTFS-realtime TripUpdates feed
+ * (served via Swiftly), hands the raw bytes to the pure functions in
+ * `src/lib/transit.ts`, and responds with a typed `Arrival[]`.
  *
- * This handler owns only I/O: read the query, read config, fetch, respond.
- * All decode/filter/shape logic lives in `src/lib/transit.ts`.
+ * Without a key (and unless ARRIVALS_DEMO=0): serves deterministic synthetic
+ * arrivals so the app is fully explorable. The `X-Data-Source` response header
+ * says which path produced the payload.
+ *
+ * This handler owns only I/O. All decode/filter/shape logic lives in
+ * `src/lib/transit.ts`; the demo generator in `src/lib/demo.ts`.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+import { synthesizeArrivals } from '../src/lib/demo';
 import {
   FeedDecodeError,
   decodeTripUpdates,
@@ -17,6 +22,7 @@ import {
   readFeedTimestamp,
 } from '../src/lib/transit';
 import type {
+  ArrivalsDataSource,
   ArrivalsErrorBody,
   ArrivalsErrorCode,
   ArrivalsResponse,
@@ -40,6 +46,11 @@ export function readFeedConfig(env: NodeJS.ProcessEnv): FeedConfig | null {
   return { url, apiKey };
 }
 
+/** Demo mode is on whenever there's no key, unless explicitly disabled. */
+export function isDemoEnabled(env: NodeJS.ProcessEnv): boolean {
+  return env.ARRIVALS_DEMO?.trim() !== '0';
+}
+
 function sendError(
   res: VercelResponse,
   httpStatus: number,
@@ -51,8 +62,24 @@ function sendError(
   res.status(httpStatus).json(body);
 }
 
+function sendArrivals(
+  res: VercelResponse,
+  arrivals: ArrivalsResponse,
+  source: ArrivalsDataSource,
+  feedTimestamp: string | null,
+): void {
+  res.setHeader(
+    'Cache-Control',
+    `public, s-maxage=${EDGE_MAX_AGE_SECONDS}, stale-while-revalidate=${EDGE_MAX_AGE_SECONDS}`,
+  );
+  res.setHeader('X-Data-Source', source);
+  if (feedTimestamp) res.setHeader('X-Feed-Timestamp', feedTimestamp);
+  res.status(200).json(arrivals);
+}
+
 async function fetchFeedBytes(config: FeedConfig): Promise<
-  { ok: true; bytes: Uint8Array } | { ok: false; code: ArrivalsErrorCode; httpStatus: number; message: string }
+  | { ok: true; bytes: Uint8Array }
+  | { ok: false; code: ArrivalsErrorCode; httpStatus: number; message: string }
 > {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
@@ -69,8 +96,7 @@ async function fetchFeedBytes(config: FeedConfig): Promise<
         message: `LA Metro realtime feed responded with HTTP ${upstream.status}.`,
       };
     }
-    const bytes = new Uint8Array(await upstream.arrayBuffer());
-    return { ok: true, bytes };
+    return { ok: true, bytes: new Uint8Array(await upstream.arrayBuffer()) };
   } catch {
     return {
       ok: false,
@@ -91,14 +117,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   const rawStopId = req.query.stopId;
-  const stopId = (Array.isArray(rawStopId) ? rawStopId[0] ?? '' : rawStopId ?? '').trim();
+  const stopId = (Array.isArray(rawStopId) ? (rawStopId[0] ?? '') : (rawStopId ?? '')).trim();
   if (stopId === '') {
     sendError(res, 400, 'MISSING_STOP_ID', 'Query parameter "stopId" is required.');
     return;
   }
 
   const config = readFeedConfig(process.env);
+
   if (!config) {
+    if (isDemoEnabled(process.env)) {
+      sendArrivals(res, synthesizeArrivals(stopId, Date.now()), 'demo', null);
+      return;
+    }
     sendError(
       res,
       500,
@@ -129,10 +160,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
-  res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${EDGE_MAX_AGE_SECONDS}, stale-while-revalidate=${EDGE_MAX_AGE_SECONDS}`,
-  );
-  if (feedTimestamp) res.setHeader('X-Feed-Timestamp', feedTimestamp);
-  res.status(200).json(arrivals);
+  sendArrivals(res, arrivals, 'live', feedTimestamp);
 }

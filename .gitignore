@@ -13,3 +13,8 @@ coverage
 .vercel
 playwright-report
 test-results
+
+# scratch / local artifacts
+/scratch-*.png
+/shot-*.png
+/lighthouse
