@@ -4,11 +4,6 @@ Mobile-first web app for live LA Metro arrival predictions. Search a stop, see
 when the next vehicles arrive and whether they're running early / on time / late,
 and favourite the stops you use.
 
-> **Status: work in progress.** Being built in phases. Phase 1 (the
-> backend-for-frontend) is complete; the UI, client state, performance,
-> accessibility, test, and ship phases follow. A full README with architecture
-> notes, screenshots, Lighthouse scores, and a live URL lands in the ship phase.
-
 ## Stack
 
 Vite · React 18 · TypeScript (strict) · Tailwind CSS · React Router v6 ·
