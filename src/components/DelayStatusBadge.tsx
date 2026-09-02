@@ -10,6 +10,13 @@ const TONE: Record<ArrivalStatus, string> = {
   unknown: 'bg-neutral-100 text-neutral-600',
 };
 
+const DOT: Record<ArrivalStatus, string> = {
+  early: 'bg-sky-500',
+  ontime: 'bg-emerald-500',
+  late: 'bg-rose-500',
+  unknown: 'bg-neutral-400',
+};
+
 interface DelayStatusBadgeProps {
   status: ArrivalStatus;
   delaySeconds: number;
@@ -21,8 +28,9 @@ export const DelayStatusBadge = memo(function DelayStatusBadge({
 }: DelayStatusBadgeProps) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold ${TONE[status]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold ${TONE[status]}`}
     >
+      <span className={`h-1.5 w-1.5 rounded-full ${DOT[status]}`} aria-hidden="true" />
       <span className="sr-only">{statusLabel(status)}: </span>
       {delayLabel({ status, delaySeconds })}
     </span>

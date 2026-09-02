@@ -19,13 +19,17 @@ export function SearchRoute() {
   const results = query.data ?? [];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex animate-fade-in flex-col gap-6">
       <header>
-        <h1 className="text-[1.375rem] font-bold leading-tight tracking-[-0.015em] text-neutral-900">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider text-brand-700">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse-soft" aria-hidden="true" />
+          Live LA Metro
+        </span>
+        <h1 className="mt-2 text-[1.375rem] font-bold leading-tight tracking-[-0.015em] text-neutral-900">
           Find your stop
         </h1>
         <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-neutral-600">
-          Live arrivals for any LA Metro bus stop or rail station.
+          Real-time arrivals for any bus stop or rail station.
         </p>
       </header>
 

@@ -7,16 +7,34 @@ interface StopResultListProps {
   labelledBy?: string;
 }
 
+/** Rotating soft tints for the pin marker — purely decorative colour variety. */
+const PIN_TINTS = [
+  'bg-brand-50 text-brand-600 group-hover:bg-brand-100',
+  'bg-sky-50 text-sky-600 group-hover:bg-sky-100',
+  'bg-violet-50 text-violet-600 group-hover:bg-violet-100',
+  'bg-amber-50 text-amber-600 group-hover:bg-amber-100',
+  'bg-rose-50 text-rose-600 group-hover:bg-rose-100',
+  'bg-teal-50 text-teal-600 group-hover:bg-teal-100',
+];
+
 export function StopResultList({ stops, labelledBy }: StopResultListProps) {
   return (
     <ul role="list" aria-labelledby={labelledBy} className="flex flex-col gap-2">
-      {stops.map((stop) => (
-        <li key={stop.id}>
+      {stops.map((stop, index) => (
+        <li
+          key={stop.id}
+          className="animate-rise"
+          style={{ animationDelay: `${Math.min(index, 10) * 35}ms` }}
+        >
           <Link
             to={`/stop/${encodeURIComponent(stop.id)}`}
-            className="group flex items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white px-4 py-3 shadow-card transition-colors hover:border-brand-300 hover:bg-brand-50/50 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            className="group flex items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white px-4 py-3 shadow-card transition-all hover:-translate-y-px hover:border-brand-300 hover:shadow-card-hover active:translate-y-0 active:shadow-card focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
           >
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100">
+            <span
+              className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-colors ${
+                PIN_TINTS[index % PIN_TINTS.length] ?? 'bg-brand-50 text-brand-600'
+              }`}
+            >
               <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true" fill="currentColor">
                 <path d="M10 2a5 5 0 0 0-5 5c0 3.5 5 11 5 11s5-7.5 5-11a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" />
               </svg>
@@ -29,7 +47,7 @@ export function StopResultList({ stops, labelledBy }: StopResultListProps) {
             </span>
             <svg
               viewBox="0 0 20 20"
-              className="h-5 w-5 shrink-0 text-neutral-300 transition-colors group-hover:text-brand-500"
+              className="h-5 w-5 shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-brand-500"
               aria-hidden="true"
               fill="currentColor"
             >

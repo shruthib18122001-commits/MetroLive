@@ -37,7 +37,7 @@ export function StopRoute() {
   }, [arrivalsQuery.data?.arrivals]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex animate-fade-in flex-col gap-4">
       <Link
         to="/"
         className="inline-flex w-fit items-center gap-1 rounded-lg py-0.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-800 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"

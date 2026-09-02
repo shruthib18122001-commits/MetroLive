@@ -16,15 +16,16 @@ export function FavoriteToggle({ stop, className = '' }: FavoriteToggleProps) {
       aria-pressed={isFavorite}
       aria-label={isFavorite ? `Remove ${stop.name} from favourites` : `Add ${stop.name} to favourites`}
       onClick={() => toggle(stop)}
-      className={`inline-flex h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
+      className={`inline-flex h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
         isFavorite
           ? 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-300'
           : 'bg-white text-neutral-700 ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50'
       } ${className}`}
     >
       <svg
+        key={isFavorite ? 'on' : 'off'}
         viewBox="0 0 20 20"
-        className={`h-4 w-4 transition-transform ${isFavorite ? 'scale-110 text-amber-500' : 'text-neutral-400'}`}
+        className={`h-4 w-4 animate-pop ${isFavorite ? 'text-amber-500' : 'text-neutral-400'}`}
         aria-hidden="true"
         fill={isFavorite ? 'currentColor' : 'none'}
         stroke="currentColor"

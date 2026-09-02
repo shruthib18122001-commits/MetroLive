@@ -42,11 +42,15 @@ export function FavoritesList() {
         Favourites
       </h2>
       <ul role="list" className="flex flex-col gap-2">
-        {favorites.map((favorite) => (
-          <li key={favorite.id} className="flex items-stretch gap-2">
+        {favorites.map((favorite, index) => (
+          <li
+            key={favorite.id}
+            className="flex animate-rise items-stretch gap-2"
+            style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
+          >
             <Link
               to={`/stop/${encodeURIComponent(favorite.id)}`}
-              className="flex flex-1 items-center gap-2.5 rounded-2xl border border-neutral-200/80 bg-white px-3.5 py-3 shadow-card transition-colors hover:border-brand-300 hover:bg-brand-50/50 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="flex flex-1 items-center gap-2.5 rounded-2xl border border-neutral-200/80 bg-white px-3.5 py-3 shadow-card transition-all hover:-translate-y-px hover:border-brand-300 hover:shadow-card-hover active:translate-y-0 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
               <StarIcon className="h-4 w-4 shrink-0 text-amber-400" />
               <span className="truncate text-[0.9375rem] font-semibold text-neutral-900">

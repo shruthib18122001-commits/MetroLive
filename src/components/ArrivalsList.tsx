@@ -4,8 +4,8 @@ import { useRef } from 'react';
 import { arrivalSummary } from '../lib/format';
 import type { Arrival } from '../types/transit';
 import { ArrivalRow } from './ArrivalRow';
+import { ArrivalRowSkeleton } from './Skeleton';
 import { Button } from './Button';
-import { Spinner } from './Spinner';
 import { StateMessage } from './StateMessage';
 
 const ROW_HEIGHT = 80;
@@ -49,11 +49,14 @@ export function ArrivalsList({
       className="min-h-[18rem]"
     >
       {isPending ? (
-        <StateMessage
-          icon={<Spinner label="Loading arrivals" />}
-          title="Loading arrivals…"
-          description="Fetching the latest predictions for this stop."
-        />
+        <div role="status">
+          <span className="sr-only">Loading arrivals…</span>
+          <div className="flex flex-col gap-2.5" aria-hidden="true">
+            {[0, 1, 2, 3].map((i) => (
+              <ArrivalRowSkeleton key={i} delayMs={i * 80} />
+            ))}
+          </div>
+        </div>
       ) : isError && rows.length === 0 ? (
         <StateMessage
           tone="error"
@@ -100,7 +103,12 @@ export function ArrivalsList({
                     className="absolute left-0 top-0 w-full"
                     style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
                   >
-                    <ArrivalRow arrival={arrival} now={now} />
+                    <div
+                      className="h-full animate-rise"
+                      style={{ animationDelay: `${Math.min(item.index, 6) * 45}ms` }}
+                    >
+                      <ArrivalRow arrival={arrival} now={now} />
+                    </div>
                   </li>
                 );
               })}

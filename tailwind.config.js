@@ -32,17 +32,30 @@ export default {
       },
       boxShadow: {
         card: '0 1px 2px 0 rgb(16 24 32 / 0.04), 0 1px 3px 0 rgb(16 24 32 / 0.05)',
-        'card-hover': '0 4px 12px -2px rgb(16 24 32 / 0.10), 0 2px 4px -1px rgb(16 24 32 / 0.06)',
+        'card-hover': '0 6px 20px -4px rgb(16 24 32 / 0.12), 0 2px 6px -2px rgb(16 24 32 / 0.07)',
         header: '0 1px 0 0 rgb(16 24 32 / 0.05)',
+        glow: '0 0 0 3px rgb(37 107 82 / 0.12)',
       },
       keyframes: {
-        'fade-in': {
-          from: { opacity: '0', transform: 'translateY(4px)' },
+        'fade-in': { from: { opacity: '0' }, to: { opacity: '1' } },
+        rise: {
+          from: { opacity: '0', transform: 'translateY(8px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
+        pop: {
+          '0%': { transform: 'scale(0.5)' },
+          '55%': { transform: 'scale(1.18)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        shimmer: { '100%': { transform: 'translateX(100%)' } },
+        'pulse-soft': { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0.55' } },
       },
       animation: {
-        'fade-in': 'fade-in 0.18s ease-out both',
+        'fade-in': 'fade-in 0.2s ease-out both',
+        rise: 'rise 0.34s cubic-bezier(0.22, 1, 0.36, 1) both',
+        pop: 'pop 0.3s ease-out both',
+        shimmer: 'shimmer 1.6s infinite',
+        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
       },
     },
   },

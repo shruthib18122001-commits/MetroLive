@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { minutesUntil } from '../lib/format';
-import type { Arrival } from '../types/transit';
+import type { Arrival, ArrivalStatus } from '../types/transit';
 import { DelayStatusBadge } from './DelayStatusBadge';
 import { RouteBadge } from './RouteBadge';
 
@@ -9,6 +9,13 @@ interface ArrivalRowProps {
   arrival: Arrival;
   now: number;
 }
+
+const ACCENT: Record<ArrivalStatus, string> = {
+  early: 'bg-sky-400',
+  ontime: 'bg-emerald-400',
+  late: 'bg-rose-400',
+  unknown: 'bg-neutral-300',
+};
 
 function Countdown({ iso, now }: { iso: string | null; now: number }) {
   const mins = minutesUntil(iso, now);
@@ -18,12 +25,16 @@ function Countdown({ iso, now }: { iso: string | null; now: number }) {
   }
   if (mins <= 0) {
     return (
-      <span className="rounded-lg bg-brand-50 px-2 py-1 text-sm font-bold text-brand-800">Due</span>
+      <span className="rounded-lg bg-brand-100 px-2 py-1 text-sm font-bold text-brand-800">Due</span>
     );
   }
   return (
     <span className="flex items-baseline gap-1">
-      <span className="text-[1.375rem] font-bold leading-none tracking-tight text-neutral-900 tabular-nums">
+      <span
+        className={`text-[1.375rem] font-bold leading-none tracking-tight tabular-nums ${
+          mins <= 3 ? 'text-brand-700' : 'text-neutral-900'
+        }`}
+      >
         {mins}
       </span>
       <span className="text-xs font-medium text-neutral-500">min</span>
@@ -37,8 +48,12 @@ export const ArrivalRow = memo(function ArrivalRow({ arrival, now }: ArrivalRowP
   return (
     <div
       aria-hidden="true"
-      className="flex h-full items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white px-3.5 shadow-card"
+      className="relative flex h-full items-center gap-3 overflow-hidden rounded-2xl border border-neutral-200/80 bg-white px-3.5 shadow-card transition-shadow hover:shadow-card-hover"
     >
+      <span
+        className={`absolute inset-y-3 left-0 w-1 rounded-full ${ACCENT[arrival.status]}`}
+      />
+
       <RouteBadge routeId={arrival.routeId} routeName={arrival.routeName} />
 
       <div className="min-w-0 flex-1">
