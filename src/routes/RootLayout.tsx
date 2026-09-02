@@ -26,10 +26,12 @@ function LiveDot() {
 export function RootLayout() {
   return (
     <div className="relative flex min-h-dvh flex-col bg-page">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(42rem_20rem_at_50%_-7rem,rgba(37,107,82,0.12),transparent_72%)]"
-      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-80 bg-[radial-gradient(42rem_20rem_at_50%_-7rem,rgba(37,107,82,0.12),transparent_72%)]" />
+        <div className="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-brand-300/25 blur-3xl" />
+        <div className="absolute -right-24 top-2 h-56 w-56 rounded-full bg-amber-200/30 blur-3xl" />
+        <div className="absolute right-1/3 top-24 h-40 w-40 rounded-full bg-sky-200/25 blur-3xl" />
+      </div>
 
       <a
         href="#main"

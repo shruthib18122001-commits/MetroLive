@@ -18,16 +18,16 @@ export function FavoritesList() {
     return (
       <section
         aria-labelledby="favorites-heading"
-        className="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-neutral-300 bg-white/60 px-6 py-7 text-center"
+        className="flex flex-col items-center gap-2 overflow-hidden rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50 via-white to-brand-50 px-6 py-7 text-center shadow-card"
       >
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-amber-50 text-amber-400">
+        <span className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-card">
           <StarIcon className="h-5 w-5" />
         </span>
-        <h2 id="favorites-heading" className="text-sm font-semibold text-neutral-800">
+        <h2 id="favorites-heading" className="text-sm font-semibold text-neutral-900">
           No favourites yet
         </h2>
-        <p className="max-w-[15rem] text-xs leading-relaxed text-neutral-600">
-          Open a stop and tap “Favourite” to pin it here for one-tap access.
+        <p className="max-w-[16rem] text-xs leading-relaxed text-neutral-600">
+          Tap “Favourite” on any stop to pin it here — or jump to a popular one below.
         </p>
       </section>
     );

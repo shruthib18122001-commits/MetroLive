@@ -2,17 +2,20 @@ import { useId, useState } from 'react';
 
 import { Button } from '../components/Button';
 import { FavoritesList } from '../components/FavoritesList';
+import { PopularStops } from '../components/PopularStops';
 import { Spinner } from '../components/Spinner';
 import { StateMessage } from '../components/StateMessage';
 import { StopResultList } from '../components/StopResultList';
 import { StopSearchInput } from '../components/StopSearchInput';
 import { useStopSearch } from '../hooks/useStopSearch';
 import { ApiError } from '../lib/apiClient';
+import { useFavoritesStore } from '../store/favorites';
 
 export function SearchRoute() {
   const [rawQuery, setRawQuery] = useState('');
   const { debouncedQuery, isActive, query } = useStopSearch(rawQuery);
   const resultsHeadingId = useId();
+  const hasFavorites = useFavoritesStore((state) => state.favorites.length > 0);
 
   const trimmed = rawQuery.trim();
   const showFavorites = trimmed.length === 0;
@@ -25,7 +28,7 @@ export function SearchRoute() {
           <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse-soft" aria-hidden="true" />
           Live LA Metro
         </span>
-        <h1 className="mt-2 text-[1.375rem] font-bold leading-tight tracking-[-0.015em] text-neutral-900">
+        <h1 className="mt-2 text-[1.375rem] font-bold leading-tight tracking-[-0.015em] text-brand-900">
           Find your stop
         </h1>
         <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-neutral-600">
@@ -33,7 +36,12 @@ export function SearchRoute() {
         </p>
       </header>
 
-      {showFavorites ? <FavoritesList /> : null}
+      {showFavorites ? (
+        <>
+          <FavoritesList />
+          {hasFavorites ? null : <PopularStops />}
+        </>
+      ) : null}
 
       <StopSearchInput
         value={rawQuery}

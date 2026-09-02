@@ -18,7 +18,7 @@ export function StopSearchInput({ value, onChange, busy = false }: StopSearchInp
 
       <div className="relative">
         <span
-          className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-neutral-400"
+          className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-500"
           aria-hidden="true"
         >
           <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
