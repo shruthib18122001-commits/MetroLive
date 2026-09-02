@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
-/** LA Metro rail line colours; bus routes fall through to neutral.
- * Shades are chosen to clear WCAG AA contrast against a white card with 14px bold text. */
+/** LA Metro rail lines get their filled brand colour (AA-contrast shades on a
+ * white card with 13px bold text); bus routes get a neutral chip. */
 function toneFor(routeId: string, routeName: string): string {
   const key = `${routeName} ${routeId}`.toLowerCase();
   if (/\ba line\b|\b801\b/.test(key)) return 'bg-blue-700 text-white';
@@ -23,7 +23,7 @@ export const RouteBadge = memo(function RouteBadge({ routeId, routeName }: Route
   const label = routeName || routeId || '—';
   return (
     <span
-      className={`inline-flex min-w-[2.75rem] items-center justify-center rounded-md px-2 py-1 text-sm font-bold tabular-nums ${toneFor(
+      className={`inline-flex h-8 min-w-[2.75rem] shrink-0 items-center justify-center rounded-lg px-2 text-[0.8125rem] font-bold leading-none tabular-nums tracking-wide ${toneFor(
         routeId,
         routeName,
       )}`}

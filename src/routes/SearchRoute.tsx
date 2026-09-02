@@ -19,13 +19,15 @@ export function SearchRoute() {
   const results = query.data ?? [];
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-xl font-bold text-neutral-900">Find your stop</h1>
-        <p className="mt-1 text-sm text-neutral-600">
-          Search any LA Metro bus stop or rail station for live arrivals.
+    <div className="flex flex-col gap-6">
+      <header>
+        <h1 className="text-[1.375rem] font-bold leading-tight tracking-[-0.015em] text-neutral-900">
+          Find your stop
+        </h1>
+        <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-neutral-600">
+          Live arrivals for any LA Metro bus stop or rail station.
         </p>
-      </div>
+      </header>
 
       {showFavorites ? <FavoritesList /> : null}
 
@@ -67,7 +69,7 @@ export function SearchRoute() {
             />
           ) : (
             <>
-              <p className="text-xs text-neutral-600">
+              <p className="px-1 text-xs text-neutral-600">
                 {results.length} {results.length === 1 ? 'match' : 'matches'} for “{debouncedQuery}”
               </p>
               <StopResultList stops={results} labelledBy={resultsHeadingId} />

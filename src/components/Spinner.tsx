@@ -4,12 +4,12 @@ interface SpinnerProps {
 }
 
 /** Decorative spinner. Pair it with visible text; screen readers get `label`. */
-export function Spinner({ label = 'Loading', className = 'h-6 w-6' }: SpinnerProps) {
+export function Spinner({ label = 'Loading', className = 'h-5 w-5' }: SpinnerProps) {
   return (
     <span
       role="status"
       aria-label={label}
-      className={`inline-block animate-spin rounded-full border-2 border-neutral-300 border-t-brand-600 ${className}`}
+      className={`inline-block animate-spin rounded-full border-2 border-current/25 border-t-current ${className}`}
     />
   );
 }

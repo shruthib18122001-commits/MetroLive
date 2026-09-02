@@ -116,16 +116,19 @@ derived arrival sort, plus `react-vendor` / `query` split into cacheable chunks.
 | | FCP / LCP | 1.4 s / 1.5 s | 1.5 s / 1.5 s |
 | | CLS | 0 | 0 |
 | | Transfer | 88.9 KiB | 88.9 KiB |
-| `/stop/:id` | Performance | 99 | 99 |
+| `/stop/:id` | Performance | 99 | 98 |
 | | Accessibility | 100 | 100 |
 | | **CLS** | **0.062** | **0** |
 | | LCP | 1.8 s | 2.0 s |
-| | Transfer (cold) | 90.0 KiB | 100.5 KiB |
-| **JS bundle** | initial (raw / gzip) | 265.9 KiB / 85.5 KiB (1 chunk) | ~260 KiB / ~85 KiB (`/`); `StopRoute` 32.5 KiB deferred |
+| | Transfer (cold) | 90.0 KiB | 102.9 KiB |
+| **JS bundle** | initial (raw / gzip) | 265.9 KiB / 85.5 KiB (1 chunk) | ~262 KiB / ~86 KiB (`/`); `StopRoute` 34 KiB deferred |
+
+_(“After” = the current build, including the visual redesign; a11y and CLS held
+at 100 / 0 through it.)_
 
 **Reading the numbers honestly:** gzipped and image-free, the app was already
 99–100 before optimizing, so the scores don't move much. The concrete win is
-**CLS on the stop page → 0** — virtualized rows have a fixed 72 px height, so the
+**CLS on the stop page → 0** — virtualized rows have a fixed 80 px height, so the
 list stops reflowing as predictions stream in. Lazy-loading trades a slightly
 heavier *cold* stop-page load (one extra chunk request) for a leaner `/` parse
 budget and a `react-vendor` chunk that survives redeploys in the browser cache —

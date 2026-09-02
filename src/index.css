@@ -7,13 +7,32 @@
 }
 
 @layer base {
-  body {
-    @apply bg-neutral-50 font-sans text-neutral-900 antialiased;
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Visible keyboard focus everywhere, even where a component forgets to add one. */
-  :focus-visible {
-    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-neutral-50;
+  body {
+    @apply bg-page font-sans text-neutral-900 antialiased;
+  }
+
+  /* Visible keyboard focus on interactive elements; form fields style their own. */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible,
+  summary:focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-page;
+  }
+
+  /* Use one clear affordance, not Chrome's plus ours. */
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  ::selection {
+    background-color: theme('colors.brand.100');
+    color: theme('colors.brand.900');
   }
 }
 
@@ -22,6 +41,19 @@
     min-height: 44px;
     min-width: 44px;
   }
+
+  /* Base card surface used across lists and state panels. */
+  .card {
+    @apply rounded-2xl border border-neutral-200/80 bg-white shadow-card;
+  }
+}
+
+/* iOS safe-area padding for the sticky header / footer. */
+.safe-t {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-b {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 @media (prefers-reduced-motion: reduce) {
