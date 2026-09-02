@@ -7,7 +7,7 @@ const TONE: Record<ArrivalStatus, { dot: string; text: string }> = {
   early: { dot: 'bg-sky-500', text: 'text-sky-700' },
   ontime: { dot: 'bg-emerald-500', text: 'text-emerald-700' },
   late: { dot: 'bg-rose-500', text: 'text-rose-700' },
-  unknown: { dot: 'bg-neutral-400', text: 'text-neutral-500' },
+  unknown: { dot: 'bg-neutral-400', text: 'text-neutral-600' },
 };
 
 interface DelayStatusBadgeProps {

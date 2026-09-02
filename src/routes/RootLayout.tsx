@@ -28,7 +28,7 @@ export function RootLayout() {
         <Outlet />
       </main>
 
-      <footer className="px-4 pb-6 pt-2 text-center text-xs text-neutral-400">
+      <footer className="px-4 pb-6 pt-2 text-center text-xs text-neutral-600">
         Live arrivals from LA Metro GTFS-realtime · not affiliated with LACMTA
       </footer>
     </div>

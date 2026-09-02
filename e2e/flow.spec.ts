@@ -17,6 +17,9 @@ test('search a stop, see arrivals, favourite it, and the favourite survives a re
   await expect(page).toHaveURL(/\/stop\/.+/);
   const heading = page.getByRole('heading', { level: 1 });
   await expect(heading).toBeVisible();
+  // Wait for the real stop name to resolve (not the "Stop <id>" placeholder).
+  await expect(page.getByText(/loading name/)).toHaveCount(0);
+  await expect(heading).not.toHaveText(/^Stop \d+$/);
   const stopName = (await heading.textContent())?.trim() ?? '';
   expect(stopName.length).toBeGreaterThan(0);
 

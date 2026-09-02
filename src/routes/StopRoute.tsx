@@ -51,7 +51,7 @@ export function StopRoute() {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="break-words text-xl font-bold text-neutral-900">{stopName}</h1>
-          <p className="mt-0.5 text-xs text-neutral-500">
+          <p className="mt-0.5 text-xs text-neutral-600">
             Stop {stopId}
             {stopQuery.isPending ? ' · loading name…' : ''}
           </p>
@@ -69,7 +69,7 @@ export function StopRoute() {
         </p>
       ) : null}
 
-      <div className="flex items-center justify-between text-xs text-neutral-500">
+      <div className="flex items-center justify-between text-xs text-neutral-600">
         <span aria-live="off">
           {arrivalsQuery.isFetching
             ? 'Updating…'

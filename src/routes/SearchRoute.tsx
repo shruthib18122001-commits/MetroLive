@@ -67,7 +67,7 @@ export function SearchRoute() {
             />
           ) : (
             <>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-neutral-600">
                 {results.length} {results.length === 1 ? 'match' : 'matches'} for “{debouncedQuery}”
               </p>
               <StopResultList stops={results} labelledBy={resultsHeadingId} />

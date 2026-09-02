@@ -9,6 +9,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createGzip } from 'node:zlib';
 
 import { augment } from '../api/_adapter';
 import arrivalsHandler from '../api/arrivals';
@@ -65,8 +66,21 @@ const server = createServer((req, res) => {
     filePath = join(DIST_DIR, 'index.html'); // SPA fallback
   }
 
-  res.setHeader('Content-Type', MIME[extname(filePath)] ?? 'application/octet-stream');
-  createReadStream(filePath).pipe(res);
+  const ext = extname(filePath);
+  res.setHeader('Content-Type', MIME[ext] ?? 'application/octet-stream');
+  if (filePath.includes(`${join(DIST_DIR, 'assets')}`)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+
+  const compressible = /\.(html|js|mjs|css|json|svg|webmanifest|txt)$/.test(filePath);
+  const acceptsGzip = (req.headers['accept-encoding'] ?? '').includes('gzip');
+  if (compressible && acceptsGzip) {
+    res.setHeader('Content-Encoding', 'gzip');
+    res.setHeader('Vary', 'Accept-Encoding');
+    createReadStream(filePath).pipe(createGzip()).pipe(res);
+  } else {
+    createReadStream(filePath).pipe(res);
+  }
 });
 
 server.listen(PORT, () => {
