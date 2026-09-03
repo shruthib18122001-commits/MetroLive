@@ -4,27 +4,21 @@ interface StopSearchInputProps {
   value: string;
   onChange: (value: string) => void;
   busy?: boolean;
-  /** `onBrand` styles the label/hint for a dark brand-green background. */
-  tone?: 'light' | 'onBrand';
 }
 
-export function StopSearchInput({ value, onChange, busy = false, tone = 'light' }: StopSearchInputProps) {
+export function StopSearchInput({ value, onChange, busy = false }: StopSearchInputProps) {
   const inputId = useId();
   const hintId = useId();
-  const onBrand = tone === 'onBrand';
 
   return (
     <div>
-      <label
-        htmlFor={inputId}
-        className={`mb-1.5 block text-sm font-semibold ${onBrand ? 'text-brand-100' : 'text-neutral-800'}`}
-      >
+      <label htmlFor={inputId} className="mb-1.5 block text-sm font-semibold text-neutral-800">
         Stop name
       </label>
 
       <div className="relative">
         <span
-          className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-500"
+          className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-brand-500"
           aria-hidden="true"
         >
           <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -45,7 +39,7 @@ export function StopSearchInput({ value, onChange, busy = false, tone = 'light' 
           placeholder="7th Street / Metro Center"
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="h-12 w-full rounded-xl border border-white/10 bg-white pl-11 pr-11 text-[0.95rem] text-neutral-900 shadow-lg outline-none transition placeholder:text-neutral-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
+          className="h-14 w-full rounded-2xl border border-neutral-200 bg-white pl-12 pr-12 text-base text-neutral-900 shadow-card outline-none transition placeholder:text-neutral-400 focus:border-brand-400 focus:shadow-glow"
         />
 
         {value ? (
@@ -53,7 +47,7 @@ export function StopSearchInput({ value, onChange, busy = false, tone = 'light' 
             type="button"
             onClick={() => onChange('')}
             aria-label="Clear search"
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-xl text-neutral-500 transition-colors hover:text-neutral-800"
+            className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-2xl text-neutral-500 transition-colors hover:text-neutral-800"
           >
             <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden="true" fill="currentColor">
               <path d="M10 8.94l3.72-3.72a.75.75 0 1 1 1.06 1.06L11.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06L10 11.06l-3.72 3.72a.75.75 0 0 1-1.06-1.06L8.94 10 5.22 6.28a.75.75 0 0 1 1.06-1.06L10 8.94Z" />
@@ -62,13 +56,10 @@ export function StopSearchInput({ value, onChange, busy = false, tone = 'light' 
         ) : null}
       </div>
 
-      <p
-        id={hintId}
-        className={`mt-1.5 flex items-center gap-1.5 text-xs ${onBrand ? 'text-brand-200' : 'text-neutral-600'}`}
-      >
+      <p id={hintId} className="mt-2 flex items-center gap-1.5 text-xs text-neutral-600">
         {busy ? (
           <>
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse-soft" aria-hidden="true" />
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500 animate-pulse-soft" aria-hidden="true" />
             Searching…
           </>
         ) : (

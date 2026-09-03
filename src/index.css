@@ -15,15 +15,13 @@
     @apply bg-page font-sans text-neutral-900 antialiased;
   }
 
-  /* Visible keyboard focus on interactive elements; form fields style their own. */
   a:focus-visible,
   button:focus-visible,
   [tabindex]:focus-visible,
   summary:focus-visible {
-    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-page;
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white;
   }
 
-  /* Use one clear affordance, not Chrome's plus ours. */
   input[type='search']::-webkit-search-cancel-button,
   input[type='search']::-webkit-search-decoration {
     -webkit-appearance: none;
@@ -42,13 +40,21 @@
     min-width: 44px;
   }
 
-  /* Base card surface used across lists and state panels. */
-  .card {
-    @apply rounded-2xl border border-neutral-200/80 bg-white shadow-card;
+  /* Full-viewport soft multi-hue wash that stays put while the page scrolls. */
+  .app-bg {
+    background-color: #f5f6fb;
+    background-image:
+      radial-gradient(36rem 30rem at 6% -6%, rgba(129, 140, 248, 0.22), transparent 60%),
+      radial-gradient(34rem 28rem at 100% 0%, rgba(56, 189, 248, 0.2), transparent 58%),
+      radial-gradient(40rem 34rem at 50% 116%, rgba(45, 212, 191, 0.16), transparent 60%),
+      radial-gradient(26rem 22rem at 88% 96%, rgba(251, 191, 36, 0.14), transparent 62%);
+  }
+
+  .glass {
+    @apply border border-white/60 bg-white/70 backdrop-blur-xl;
   }
 }
 
-/* iOS safe-area padding for the sticky header / footer. */
 .safe-t {
   padding-top: env(safe-area-inset-top);
 }

@@ -14,24 +14,7 @@ export function FavoritesList() {
   const favorites = useFavoritesStore((state) => state.favorites);
   const remove = useFavoritesStore((state) => state.remove);
 
-  if (favorites.length === 0) {
-    return (
-      <section
-        aria-labelledby="favorites-heading"
-        className="flex flex-col items-center gap-2 overflow-hidden rounded-2xl border border-amber-300/70 bg-gradient-to-br from-amber-100 via-white to-brand-100 px-6 py-7 text-center shadow-card"
-      >
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-card-hover">
-          <StarIcon className="h-6 w-6" />
-        </span>
-        <h2 id="favorites-heading" className="text-sm font-semibold text-neutral-900">
-          No favourites yet
-        </h2>
-        <p className="max-w-[16rem] text-xs leading-relaxed text-neutral-600">
-          Tap “Favourite” on any stop to pin it here — or jump to a popular one below.
-        </p>
-      </section>
-    );
-  }
+  if (favorites.length === 0) return null;
 
   return (
     <section aria-labelledby="favorites-heading" className="flex flex-col gap-2">
@@ -50,9 +33,9 @@ export function FavoritesList() {
           >
             <Link
               to={`/stop/${encodeURIComponent(favorite.id)}`}
-              className="flex flex-1 items-center gap-2.5 rounded-2xl border border-neutral-200/80 bg-white px-3.5 py-3 shadow-card transition-all hover:-translate-y-px hover:border-brand-300 hover:shadow-card-hover active:translate-y-0 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="glass flex flex-1 items-center gap-2.5 rounded-2xl px-3.5 py-3 shadow-card transition-all hover:-translate-y-px hover:border-brand-300 hover:shadow-card-hover active:translate-y-0 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
             >
-              <StarIcon className="h-4 w-4 shrink-0 text-amber-400" />
+              <StarIcon className="h-4 w-4 shrink-0 text-amber-500" />
               <span className="truncate text-[0.9375rem] font-semibold text-neutral-900">
                 {favorite.name}
               </span>
@@ -61,7 +44,7 @@ export function FavoritesList() {
               type="button"
               onClick={() => remove(favorite.id)}
               aria-label={`Remove ${favorite.name} from favourites`}
-              className="grid w-11 shrink-0 place-items-center rounded-2xl border border-neutral-200/80 bg-white text-neutral-600 shadow-card transition-colors hover:bg-neutral-50 hover:text-neutral-800 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="glass grid w-11 shrink-0 place-items-center rounded-2xl text-neutral-600 shadow-card transition-colors hover:bg-white hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
             >
               <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true" fill="currentColor">
                 <path d="M10 8.94l3.72-3.72a.75.75 0 1 1 1.06 1.06L11.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06L10 11.06l-3.72 3.72a.75.75 0 0 1-1.06-1.06L8.94 10 5.22 6.28a.75.75 0 0 1 1.06-1.06L10 8.94Z" />

@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -22,19 +22,24 @@ afterEach(() => {
 });
 
 describe('<SearchRoute>', () => {
-  it('shows favourites (empty state) when the query is blank', () => {
+  it('shows the landing content (popular stops + features) when the query is blank', () => {
     mockFetch({});
     renderWithProviders(<SearchRoute />);
     expect(screen.getByRole('heading', { name: 'Find your stop' })).toBeInTheDocument();
-    expect(screen.getByText('No favourites yet')).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Popular stops' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Live predictions' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Favourites' })).not.toBeInTheDocument();
   });
 
-  it('lists saved favourites above the input', () => {
-    useFavoritesStore.setState({ favorites: [{ id: '80409', name: 'Union Station' }] });
+  it('lists saved favourites', () => {
+    useFavoritesStore.setState({ favorites: [{ id: '55555', name: 'My Home Stop' }] });
     mockFetch({});
     renderWithProviders(<SearchRoute />);
-    expect(screen.getByRole('heading', { name: 'Favourites' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Union Station/ })).toHaveAttribute('href', '/stop/80409');
+    const favorites = screen.getByRole('region', { name: 'Favourites' });
+    expect(within(favorites).getByRole('link', { name: /My Home Stop/ })).toHaveAttribute(
+      'href',
+      '/stop/55555',
+    );
   });
 
   it('debounces input, then renders results', async () => {

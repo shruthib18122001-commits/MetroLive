@@ -5,7 +5,7 @@ test('search a stop, see arrivals, favourite it, and the favourite survives a re
 }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Find your stop' })).toBeVisible();
-  await expect(page.getByText('No favourites yet')).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Popular stops' })).toBeVisible();
 
   // Search
   await page.getByLabel('Stop name').fill('long beach');
