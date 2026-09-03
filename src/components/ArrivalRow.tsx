@@ -11,33 +11,42 @@ interface ArrivalRowProps {
 }
 
 const ACCENT: Record<ArrivalStatus, string> = {
-  early: 'bg-sky-400',
-  ontime: 'bg-emerald-400',
-  late: 'bg-rose-400',
+  early: 'bg-sky-500',
+  ontime: 'bg-emerald-500',
+  late: 'bg-rose-500',
   unknown: 'bg-neutral-300',
+};
+
+const ROW_TINT: Record<ArrivalStatus, string> = {
+  early: 'bg-sky-50/70',
+  ontime: 'bg-white',
+  late: 'bg-rose-50/70',
+  unknown: 'bg-white',
 };
 
 function Countdown({ iso, now }: { iso: string | null; now: number }) {
   const mins = minutesUntil(iso, now);
 
   if (mins === null) {
-    return <span className="text-sm font-medium text-neutral-400">No ETA</span>;
+    return <span className="text-sm font-semibold text-neutral-600">No ETA</span>;
   }
   if (mins <= 0) {
     return (
-      <span className="rounded-lg bg-brand-100 px-2 py-1 text-sm font-bold text-brand-800">Due</span>
+      <span className="rounded-lg bg-brand-600 px-2.5 py-1 text-sm font-bold text-white shadow-sm">
+        Due
+      </span>
     );
   }
   return (
     <span className="flex items-baseline gap-1">
       <span
-        className={`text-[1.375rem] font-bold leading-none tracking-tight tabular-nums ${
-          mins <= 3 ? 'text-brand-700' : 'text-neutral-900'
+        className={`text-2xl font-extrabold leading-none tracking-tight tabular-nums ${
+          mins <= 3 ? 'text-brand-600' : 'text-neutral-900'
         }`}
       >
         {mins}
       </span>
-      <span className="text-xs font-medium text-neutral-500">min</span>
+      <span className="text-xs font-semibold text-neutral-600">min</span>
     </span>
   );
 }
@@ -48,11 +57,9 @@ export const ArrivalRow = memo(function ArrivalRow({ arrival, now }: ArrivalRowP
   return (
     <div
       aria-hidden="true"
-      className="relative flex h-full items-center gap-3 overflow-hidden rounded-2xl border border-neutral-200/80 bg-white px-3.5 shadow-card transition-shadow hover:shadow-card-hover"
+      className={`relative flex h-full items-center gap-3 overflow-hidden rounded-2xl border border-neutral-200 px-3.5 shadow-card transition-shadow hover:shadow-card-hover ${ROW_TINT[arrival.status]}`}
     >
-      <span
-        className={`absolute inset-y-3 left-0 w-1 rounded-full ${ACCENT[arrival.status]}`}
-      />
+      <span className={`absolute inset-y-0 left-0 w-1.5 ${ACCENT[arrival.status]}`} />
 
       <RouteBadge routeId={arrival.routeId} routeName={arrival.routeName} />
 

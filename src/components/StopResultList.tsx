@@ -7,14 +7,14 @@ interface StopResultListProps {
   labelledBy?: string;
 }
 
-/** Rotating soft tints for the pin marker — purely decorative colour variety. */
+/** Rotating tints for the pin marker — purely decorative colour variety. */
 const PIN_TINTS = [
-  'bg-brand-50 text-brand-600 group-hover:bg-brand-100',
-  'bg-sky-50 text-sky-600 group-hover:bg-sky-100',
-  'bg-violet-50 text-violet-600 group-hover:bg-violet-100',
-  'bg-amber-50 text-amber-600 group-hover:bg-amber-100',
-  'bg-rose-50 text-rose-600 group-hover:bg-rose-100',
-  'bg-teal-50 text-teal-600 group-hover:bg-teal-100',
+  'bg-brand-100 text-brand-700 group-hover:bg-brand-200',
+  'bg-sky-100 text-sky-700 group-hover:bg-sky-200',
+  'bg-violet-100 text-violet-700 group-hover:bg-violet-200',
+  'bg-amber-100 text-amber-700 group-hover:bg-amber-200',
+  'bg-rose-100 text-rose-700 group-hover:bg-rose-200',
+  'bg-teal-100 text-teal-700 group-hover:bg-teal-200',
 ];
 
 export function StopResultList({ stops, labelledBy }: StopResultListProps) {
@@ -28,11 +28,11 @@ export function StopResultList({ stops, labelledBy }: StopResultListProps) {
         >
           <Link
             to={`/stop/${encodeURIComponent(stop.id)}`}
-            className="group flex items-center gap-3 rounded-2xl border border-neutral-200/80 bg-white px-4 py-3 shadow-card transition-all hover:-translate-y-px hover:border-brand-300 hover:shadow-card-hover active:translate-y-0 active:shadow-card focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            className="group flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white px-4 py-3 shadow-card transition-all hover:-translate-y-px hover:border-brand-300 hover:shadow-card-hover active:translate-y-0 active:shadow-card focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
           >
             <span
               className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-colors ${
-                PIN_TINTS[index % PIN_TINTS.length] ?? 'bg-brand-50 text-brand-600'
+                PIN_TINTS[index % PIN_TINTS.length] ?? 'bg-brand-100 text-brand-700'
               }`}
             >
               <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true" fill="currentColor">

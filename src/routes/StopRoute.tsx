@@ -37,76 +37,83 @@ export function StopRoute() {
   }, [arrivalsQuery.data?.arrivals]);
 
   return (
-    <div className="flex animate-fade-in flex-col gap-4">
-      <Link
-        to="/"
-        className="inline-flex w-fit items-center gap-1 rounded-lg py-0.5 text-sm font-medium text-brand-700 transition-colors hover:text-brand-800 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-      >
-        <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true" fill="currentColor">
-          <path d="M12.79 5.23a.75.75 0 0 1 0 1.06L9.06 10l3.73 3.71a.75.75 0 1 1-1.06 1.06l-4.25-4.24a.75.75 0 0 1 0-1.06l4.25-4.24a.75.75 0 0 1 1.06 0Z" />
-        </svg>
-        All stops
-      </Link>
+    <div className="animate-fade-in">
+      <div className="-mx-4 -mt-5 rounded-b-3xl bg-gradient-to-b from-brand-800 to-brand-900 px-4 pb-6 pt-4 text-white shadow-hero">
+        <Link
+          to="/"
+          className="inline-flex w-fit items-center gap-1 rounded-lg py-0.5 text-sm font-medium text-brand-200 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-900"
+        >
+          <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true" fill="currentColor">
+            <path d="M12.79 5.23a.75.75 0 0 1 0 1.06L9.06 10l3.73 3.71a.75.75 0 1 1-1.06 1.06l-4.25-4.24a.75.75 0 0 1 0-1.06l4.25-4.24a.75.75 0 0 1 1.06 0Z" />
+          </svg>
+          All stops
+        </Link>
 
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-[1.375rem] font-bold leading-snug tracking-[-0.01em] text-neutral-900">
-            {stopName}
-          </h1>
-          <p className="mt-1 text-[0.8125rem] text-neutral-600">
-            Stop {stopId}
-            {stopQuery.isPending ? ' · loading name…' : ''}
-          </p>
+        <div className="mt-3 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-[1.375rem] font-bold leading-snug tracking-[-0.01em] text-white">
+              {stopName}
+            </h1>
+            <p className="mt-1 text-[0.8125rem] text-brand-200">
+              Stop {stopId}
+              {stopQuery.isPending ? ' · loading name…' : ''}
+            </p>
+          </div>
+          <FavoriteToggle
+            stop={{ id: stopId, name: stopName }}
+            className="mt-0.5 shrink-0 focus-visible:ring-offset-brand-900"
+          />
         </div>
-        <FavoriteToggle stop={{ id: stopId, name: stopName }} className="mt-0.5 shrink-0" />
       </div>
 
-      {source === 'demo' ? (
-        <p
-          role="note"
-          className="flex items-start gap-2 rounded-xl border border-sky-200 bg-sky-50/70 px-3.5 py-2.5 text-[0.8125rem] leading-relaxed text-sky-900"
-        >
-          <svg viewBox="0 0 20 20" className="mt-px h-4 w-4 shrink-0 text-sky-500" aria-hidden="true" fill="currentColor">
-            <path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1 7a1 1 0 1 1-2 0V9a1 1 0 1 1 2 0v5Z" />
-          </svg>
-          <span>
-            Showing <strong>demo data</strong>. Set{' '}
-            <code className="rounded bg-sky-100 px-1 py-px font-mono text-[0.75rem]">SWIFTLY_API_KEY</code>{' '}
-            on the server for live LA Metro predictions.
+      <div className="mt-5 flex flex-col gap-4">
+        {source === 'demo' ? (
+          <p
+            role="note"
+            className="flex items-start gap-2 rounded-xl border border-sky-200 bg-sky-50 px-3.5 py-2.5 text-[0.8125rem] leading-relaxed text-sky-900"
+          >
+            <svg viewBox="0 0 20 20" className="mt-px h-4 w-4 shrink-0 text-sky-500" aria-hidden="true" fill="currentColor">
+              <path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1 7a1 1 0 1 1-2 0V9a1 1 0 1 1 2 0v5Z" />
+            </svg>
+            <span>
+              Showing <strong>demo data</strong>. Set{' '}
+              <code className="rounded bg-sky-100 px-1 py-px font-mono text-[0.75rem]">SWIFTLY_API_KEY</code>{' '}
+              on the server for live LA Metro predictions.
+            </span>
+          </p>
+        ) : null}
+
+        <div className="flex items-center justify-between px-1 text-xs text-neutral-600">
+          <span aria-live="off">
+            {arrivalsQuery.isFetching
+              ? 'Updating…'
+              : arrivalsQuery.dataUpdatedAt
+                ? `Updated ${formatAge(arrivalsQuery.dataUpdatedAt, now)}`
+                : ''}
           </span>
-        </p>
-      ) : null}
+          <button
+            type="button"
+            onClick={() => void arrivalsQuery.refetch()}
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-semibold text-brand-700 transition-colors hover:bg-brand-100 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+          >
+            <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" aria-hidden="true" fill="currentColor">
+              <path d="M10 3a7 7 0 0 1 6.32 4h-2.2a5 5 0 1 0 .1 6h2.16A7 7 0 1 1 10 3Z" />
+              <path d="M17 3v4h-4z" />
+            </svg>
+            Refresh
+          </button>
+        </div>
 
-      <div className="flex items-center justify-between px-1 text-xs text-neutral-600">
-        <span aria-live="off">
-          {arrivalsQuery.isFetching
-            ? 'Updating…'
-            : arrivalsQuery.dataUpdatedAt
-              ? `Updated ${formatAge(arrivalsQuery.dataUpdatedAt, now)}`
-              : ''}
-        </span>
-        <button
-          type="button"
-          onClick={() => void arrivalsQuery.refetch()}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-brand-700 transition-colors hover:bg-brand-50 focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-        >
-          <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" aria-hidden="true" fill="currentColor">
-            <path d="M10 3a7 7 0 0 1 6.32 4h-2.2a5 5 0 1 0 .1 6h2.16A7 7 0 1 1 10 3Z" />
-            <path d="M17 3v4h-4z" />
-          </svg>
-          Refresh
-        </button>
+        <ArrivalsList
+          arrivals={sortedArrivals}
+          isPending={arrivalsQuery.isPending}
+          isError={arrivalsQuery.isError}
+          isFetching={arrivalsQuery.isFetching}
+          errorMessage={errorMessage}
+          now={now}
+          onRetry={() => void arrivalsQuery.refetch()}
+        />
       </div>
-
-      <ArrivalsList
-        arrivals={sortedArrivals}
-        isPending={arrivalsQuery.isPending}
-        isError={arrivalsQuery.isError}
-        isFetching={arrivalsQuery.isFetching}
-        errorMessage={errorMessage}
-        now={now}
-        onRetry={() => void arrivalsQuery.refetch()}
-      />
     </div>
   );
 }

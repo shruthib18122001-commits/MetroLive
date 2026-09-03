@@ -18,10 +18,10 @@ export function FavoritesList() {
     return (
       <section
         aria-labelledby="favorites-heading"
-        className="flex flex-col items-center gap-2 overflow-hidden rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50 via-white to-brand-50 px-6 py-7 text-center shadow-card"
+        className="flex flex-col items-center gap-2 overflow-hidden rounded-2xl border border-amber-300/70 bg-gradient-to-br from-amber-100 via-white to-brand-100 px-6 py-7 text-center shadow-card"
       >
-        <span className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-card">
-          <StarIcon className="h-5 w-5" />
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-card-hover">
+          <StarIcon className="h-6 w-6" />
         </span>
         <h2 id="favorites-heading" className="text-sm font-semibold text-neutral-900">
           No favourites yet
@@ -37,7 +37,7 @@ export function FavoritesList() {
     <section aria-labelledby="favorites-heading" className="flex flex-col gap-2">
       <h2
         id="favorites-heading"
-        className="px-1 text-[0.6875rem] font-bold uppercase tracking-wider text-neutral-600"
+        className="px-1 text-[0.6875rem] font-bold uppercase tracking-wider text-brand-700"
       >
         Favourites
       </h2>
