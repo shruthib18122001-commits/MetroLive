@@ -1,42 +1,75 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
 
-import { arrivalSummary } from '../lib/format';
-import type { Arrival } from '../types/transit';
+import { enrichedArrivalSummary } from '../lib/insights';
+import type { EnrichedArrival, VanishedArrival } from '../lib/insights';
 import { ArrivalRow } from './ArrivalRow';
 import { ArrivalRowSkeleton } from './Skeleton';
 import { Button } from './Button';
 import { StateMessage } from './StateMessage';
 
 const ROW_HEIGHT = 80;
+const ROW_HEIGHT_GLANCE = 104;
 const ROW_GAP = 10;
 
 interface ArrivalsListProps {
-  arrivals: Arrival[] | undefined;
+  arrivals: EnrichedArrival[] | undefined;
+  vanished?: VanishedArrival[];
   isPending: boolean;
   isError: boolean;
   isFetching: boolean;
   errorMessage: string | null;
   now: number;
+  glance?: boolean;
   onRetry: () => void;
+}
+
+function VanishedNotice({ vanished, now }: { vanished: VanishedArrival[]; now: number }) {
+  return (
+    <section
+      aria-label="Recently dropped from the feed"
+      className="mt-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-3"
+    >
+      <p className="text-[0.6875rem] font-bold uppercase tracking-wider text-amber-800">
+        Dropped off the board
+      </p>
+      <ul className="mt-1.5 flex flex-col gap-1.5">
+        {vanished.map((v) => {
+          const secsAgo = Math.max(0, Math.round((now - v.lastSeenAt) / 1000));
+          const ago = secsAgo < 60 ? `${secsAgo}s ago` : `${Math.round(secsAgo / 60)}m ago`;
+          return (
+            <li key={v.key} className="text-[0.8125rem] leading-snug text-amber-900">
+              <span className="font-bold">{v.routeName || v.routeId}</span>
+              {v.headsign ? ` to ${v.headsign}` : ''} — was{' '}
+              {v.wasMinutesAway === null ? 'due' : `${v.wasMinutesAway} min away`}, left the feed{' '}
+              {ago}. May be cancelled or running without GPS.
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
 }
 
 export function ArrivalsList({
   arrivals,
+  vanished = [],
   isPending,
   isError,
   isFetching,
   errorMessage,
   now,
+  glance = false,
   onRetry,
 }: ArrivalsListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const rows = arrivals ?? [];
+  const rowHeight = glance ? ROW_HEIGHT_GLANCE : ROW_HEIGHT;
 
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => ROW_HEIGHT,
+    estimateSize: () => rowHeight,
     gap: ROW_GAP,
     overscan: 8,
   });
@@ -69,10 +102,13 @@ export function ArrivalsList({
           }
         />
       ) : rows.length === 0 ? (
-        <StateMessage
-          title="No upcoming arrivals"
-          description="Nothing is predicted for this stop in the next hour. Service may have ended for the day."
-        />
+        <>
+          <StateMessage
+            title="No upcoming arrivals"
+            description="Nothing is predicted for this stop in the next hour. Service may have ended for the day."
+          />
+          {vanished.length > 0 ? <VanishedNotice vanished={vanished} now={now} /> : null}
+        </>
       ) : (
         <div className="animate-fade-in">
           {isError ? (
@@ -98,8 +134,8 @@ export function ArrivalsList({
                 if (!arrival) return null;
                 return (
                   <li
-                    key={`${arrival.routeId}-${arrival.predictedTime ?? 'na'}-${item.index}`}
-                    aria-label={arrivalSummary(arrival, now)}
+                    key={arrival.key}
+                    aria-label={enrichedArrivalSummary(arrival, now)}
                     className="absolute left-0 top-0 w-full"
                     style={{ height: `${item.size}px`, transform: `translateY(${item.start}px)` }}
                   >
@@ -107,13 +143,15 @@ export function ArrivalsList({
                       className="h-full animate-rise"
                       style={{ animationDelay: `${Math.min(item.index, 6) * 45}ms` }}
                     >
-                      <ArrivalRow arrival={arrival} now={now} />
+                      <ArrivalRow arrival={arrival} now={now} glance={glance} />
                     </div>
                   </li>
                 );
               })}
             </ol>
           </div>
+
+          {vanished.length > 0 ? <VanishedNotice vanished={vanished} now={now} /> : null}
         </div>
       )}
     </section>

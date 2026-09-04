@@ -127,7 +127,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
   if (!config) {
     if (isDemoEnabled(process.env)) {
-      sendArrivals(res, synthesizeArrivals(stopId, Date.now()), 'demo', null);
+      const nowMs = Date.now();
+      // Demo feed is "generated" a few seconds ago, so the freshness UI has data.
+      const feedTimestamp = new Date(nowMs - 4_000).toISOString();
+      sendArrivals(res, synthesizeArrivals(stopId, nowMs), 'demo', feedTimestamp);
       return;
     }
     sendError(

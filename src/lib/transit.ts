@@ -41,8 +41,13 @@ export interface TripDescriptorLike {
   tripHeadsign?: string | null;
 }
 
+export interface VehicleDescriptorLike {
+  id?: string | null;
+}
+
 export interface TripUpdateLike {
   trip?: TripDescriptorLike | null;
+  vehicle?: VehicleDescriptorLike | null;
   stopTimeUpdate?: readonly StopTimeUpdateLike[] | null;
   delay?: number | null;
   timestamp?: number | null;
@@ -175,8 +180,10 @@ function normalizeStopTimeUpdate(raw: unknown): StopTimeUpdateLike {
 function normalizeTripUpdate(raw: unknown): TripUpdateLike {
   const r = asRecord(raw);
   const stopTimeUpdates = pick(r, 'stopTimeUpdate', 'stop_time_update');
+  const vehicle = asRecord(r.vehicle);
   return {
     trip: normalizeTrip(r.trip),
+    vehicle: { id: readString(vehicle.id) },
     stopTimeUpdate: Array.isArray(stopTimeUpdates)
       ? stopTimeUpdates.map(normalizeStopTimeUpdate)
       : [],
@@ -286,7 +293,14 @@ export function extractArrivals(
 
     const trip: TripDescriptorLike = tripUpdate.trip ?? {};
     const routeId = (trip.routeId ?? '').trim();
+    const tripId = (trip.tripId ?? '').trim();
+    const vehicleId = (tripUpdate.vehicle?.id ?? '').trim() || null;
     const tripDelay = toNumberOrNull(tripUpdate.delay);
+    const vehicleTimestamp = toIso(
+      tripUpdate.timestamp === null || tripUpdate.timestamp === undefined
+        ? null
+        : tripUpdate.timestamp * 1000,
+    );
 
     for (const stu of tripUpdate.stopTimeUpdate ?? []) {
       if ((stu.stopId ?? '').trim() !== targetStopId) continue;
@@ -313,6 +327,10 @@ export function extractArrivals(
         predictedTime: toIso(predictedMs),
         delaySeconds: delaySeconds ?? 0,
         status: classifyDelay(delaySeconds),
+        tripId: tripId || undefined,
+        vehicleId,
+        stopSequence: stu.stopSequence ?? null,
+        vehicleTimestamp,
       });
     }
   }

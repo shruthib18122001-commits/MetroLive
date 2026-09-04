@@ -27,6 +27,16 @@ export interface Arrival {
   /** Seconds relative to schedule: positive = late, negative = early, `0` when unknown. */
   delaySeconds: number;
   status: ArrivalStatus;
+
+  /* --- Identity + freshness (used client-side for trend / ghost / staleness) --- */
+  /** GTFS `trip_id` — stable key for matching the same arrival across polls. */
+  tripId?: string;
+  /** GTFS `vehicle.id` when the feed reports it. */
+  vehicleId?: string | null;
+  /** `stop_time_update.stop_sequence` at the requested stop. */
+  stopSequence?: number | null;
+  /** ISO-8601 — when this vehicle last reported (`trip_update.timestamp`). */
+  vehicleTimestamp?: string | null;
 }
 
 /** Success body of `GET /api/arrivals` — a bare array, ascending by arrival time. */

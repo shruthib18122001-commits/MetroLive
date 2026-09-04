@@ -11,6 +11,21 @@ early / on time / late, and favourite the stops you use most.
 
 <!-- Replace the images above with fresh screenshots after deploying. -->
 
+## Realtime insights
+
+Things `src/lib/insights.ts` derives from successive polls that most transit apps
+don't surface:
+
+| | What it does |
+| --- | --- |
+| **Prediction trend** | Remembers each trip's ETA across the last few polls and flags when it's *slipping later* / *being pulled in* (`▲ 2m later`). |
+| **Ghost-bus detection** | A trip that was still minutes out and then drops from the feed gets a "left the board — may be cancelled or running without GPS" notice instead of vanishing silently. |
+| **Feed & vehicle staleness** | Shows how old the feed actually is (`Live feed · 40s`) and flags a vehicle that hasn't reported in > 5 min (`⚠ no signal 7m`). |
+| **Bunching & gaps** | "Another 4 close behind" / "22-min gap after this" from the arrivals list alone. |
+| **Accessibility board** | A `role="status"` announcer speaks only *changes* ("B Line no longer listed"), plus a persisted large-text "glance" mode. |
+
+All of it is pure and unit-tested; demo mode is scripted to exercise every one.
+
 ---
 
 ## Architecture

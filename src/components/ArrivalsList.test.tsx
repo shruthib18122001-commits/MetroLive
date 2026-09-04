@@ -2,6 +2,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
+import { computeInsights } from '../lib/insights';
+import type { EnrichedArrival, VanishedArrival } from '../lib/insights';
 import type { Arrival } from '../types/transit';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { ArrivalsList } from './ArrivalsList';
@@ -17,7 +19,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 
 const NOW = Date.UTC(2026, 0, 15, 12, 0, 0);
 
-const sampleArrivals: Arrival[] = [
+const plainArrivals: Arrival[] = [
   {
     routeId: '720',
     routeName: '720',
@@ -26,6 +28,7 @@ const sampleArrivals: Arrival[] = [
     scheduledTime: new Date(NOW + 60_000).toISOString(),
     delaySeconds: 240,
     status: 'late',
+    tripId: 't720',
   },
   {
     routeId: '801',
@@ -35,11 +38,18 @@ const sampleArrivals: Arrival[] = [
     scheduledTime: new Date(NOW + 600_000).toISOString(),
     delaySeconds: 0,
     status: 'ontime',
+    tripId: 't801',
   },
 ];
 
+/** Enrich via the real pipeline so the row shape matches production. */
+function enrich(arrivals: Arrival[], now = NOW): EnrichedArrival[] {
+  return computeInsights({}, arrivals, { now }).insights.arrivals;
+}
+
 const baseProps = {
-  arrivals: undefined,
+  arrivals: undefined as EnrichedArrival[] | undefined,
+  vanished: [] as VanishedArrival[],
   isPending: false,
   isError: false,
   isFetching: false,
@@ -71,7 +81,7 @@ describe('<ArrivalsList>', () => {
   });
 
   it('renders arrivals in a polite live region with per-row summaries', () => {
-    renderWithProviders(<ArrivalsList {...baseProps} arrivals={sampleArrivals} />);
+    renderWithProviders(<ArrivalsList {...baseProps} arrivals={enrich(plainArrivals)} />);
     const region = screen.getByRole('region', { name: 'Upcoming arrivals' });
     expect(region).toHaveAttribute('aria-live', 'polite');
     expect(screen.getByLabelText('Route 720 to Commerce. 5 min. 4 min late.')).toBeInTheDocument();
@@ -79,8 +89,39 @@ describe('<ArrivalsList>', () => {
   });
 
   it('keeps stale rows visible with a warning when a refetch fails', () => {
-    renderWithProviders(<ArrivalsList {...baseProps} arrivals={sampleArrivals} isError />);
+    renderWithProviders(<ArrivalsList {...baseProps} arrivals={enrich(plainArrivals)} isError />);
     expect(screen.getByText(/showing the last known times/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Route 720 to Commerce/)).toBeInTheDocument();
+  });
+
+  it('shows the vanished / ghost-bus notice', () => {
+    const vanished: VanishedArrival[] = [
+      {
+        key: 'trip:ghost',
+        routeId: '4',
+        routeName: '4',
+        headsign: 'Downtown',
+        lastPredictedTime: new Date(NOW + 120_000).toISOString(),
+        lastSeenAt: NOW - 45_000,
+        wasMinutesAway: 3,
+      },
+    ];
+    renderWithProviders(<ArrivalsList {...baseProps} arrivals={enrich(plainArrivals)} vanished={vanished} />);
+    expect(screen.getByRole('region', { name: 'Recently dropped from the feed' })).toBeInTheDocument();
+    expect(screen.getByText(/left the feed/i)).toHaveTextContent('4 to Downtown');
+  });
+
+  it('surfaces a "slipping later" trend chip', () => {
+    const later = computeInsights(
+      computeInsights({}, plainArrivals, { now: NOW - 60_000 }).history,
+      plainArrivals.map((a) =>
+        a.tripId === 't720'
+          ? { ...a, predictedTime: new Date(NOW + 300_000 + 150_000).toISOString() }
+          : a,
+      ),
+      { now: NOW },
+    ).insights.arrivals;
+    renderWithProviders(<ArrivalsList {...baseProps} arrivals={later} />);
+    expect(screen.getByText(/later/)).toBeInTheDocument();
   });
 });
